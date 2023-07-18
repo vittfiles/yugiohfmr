@@ -1,1 +1,97 @@
 /* You can add global styles to this file, and also import other style files */
+@import './assets/styles/my-theme.scss';
+$primary: map-get($my-theme, primary);
+
+.primary-color{
+    color: map-get($primary, 500);
+}
+
+a.active:not(:disabled){
+    color: map-get($primary, 500);
+}
+.data-monster{
+  border: 2px solid #fff493;
+}
+
+html,body{
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+*, *:after, *:before{
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+ul{
+    display: flex;
+}
+li{
+    list-style: none;
+    margin-left: .3rem;
+}
+.example-spacer {
+    flex: 1 1 auto;
+}
+  
+main{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+
+
+.cardYugi{
+    display: flex;
+    flex-direction: column;
+    width: calc(100% / 8);
+    padding: .3rem;
+    div{
+        background-color: rgb(156, 123, 80);
+        font-size: 0;
+        line-height: 0;
+        img{
+            width: 100%;
+        }
+    }
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #26a69a #DFE9EB;
+  }
+  
+  /* Chrome, Edge and Safari */
+  *::-webkit-scrollbar {
+    width: 10px;
+    width: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: #DFE9EB;
+  }
+  
+  *::-webkit-scrollbar-track:hover {
+    background-color: #B8C0C2;
+  }
+  
+  *::-webkit-scrollbar-track:active {
+    background-color: #B8C0C2;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #26a69a;
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #166d64;
+  }
+  
+  *::-webkit-scrollbar-thumb:active {
+    background-color: #35c7b9;
+  }
+  
