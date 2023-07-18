@@ -1,0 +1,8 @@
+<p>home works!</p>
+<main>
+    <div *ngFor="let card of cards$ | async; index as i" [ngClass]="{'cardYugi': true}">
+        <div *ngIf="i<30">
+            <img [src]="card.src" loading="lazy" />
+        </div>
+    </div>
+</main>

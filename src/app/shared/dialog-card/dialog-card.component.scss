@@ -1,0 +1,47 @@
+.full-card{
+    width: 200px;
+    padding: .5rem;
+    p{
+        font-size: .8rem;
+        width: 100%;
+    }
+    img{
+        width: 100%;
+        padding: .3rem .5rem;
+        margin: 0px auto; 
+    }
+    div{
+        width: 100%;
+    }
+    p.description{
+        padding: .05rem;
+        margin-bottom: .1rem;
+    }
+}
+.flex-p{
+    display: flex;
+}
+.color-monster{
+    background-color: #fff9c4;
+    p.description{
+        border: 2px solid #fff493;
+    }
+}
+.color-magic{
+    background-color: #a5d6a7;
+    p.description{
+        border: 1px solid #7bd37e;
+    }
+}
+.color-trap{
+    background-color: #f8bbd0;
+    p.description{
+        border: 1px solid #b85a7b;
+    }
+}
+.color-ritual{
+    background-color: #c5cae9;
+    p.description{
+        border: 1px solid #6671b8;
+    }
+}

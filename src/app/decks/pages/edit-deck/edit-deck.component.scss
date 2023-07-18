@@ -1,0 +1,90 @@
+.limit-h{
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    height: 75vh;
+    overflow-y: scroll;
+    padding: .2rem;
+    margin-top: .3rem;
+    margin-left: .5rem;
+    background-color: #26a69a7e;
+    border: 3px solid #26a69a7e;
+    border-radius: .5rem;
+}
+.options-card{
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    padding: .5rem;
+    section{
+        width: 100%;
+    }
+}
+.section-tab{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.filter-card{
+    display: flex;
+    flex-direction: column;
+    div{
+        display: flex;
+        flex-direction: column;
+    }
+    mat-chip-listbox{
+        width: 100%;
+        mat-chip-option{
+            width: 40%;
+        }
+        mat-chip-option.add-card-chip{
+            width: auto;
+        }
+    }
+    mat-button-toggle-group{
+        width: 100%;
+        mat-button-toggle{
+            padding-top: .3rem;
+            padding-bottom: .3rem;
+            width: 50%;
+        }
+    }
+}
+.hide{
+    visibility: hidden;
+    position: absolute;
+}
+.card-deck-size{
+    display: flex;
+    justify-content: stretch;
+    width: 25%;
+}
+.flex-p{display: flex;}
+.color-monster{
+    background-color: #fff9c4;
+}
+.color-magic{
+    background-color: #a5d6a7;
+    p.description{
+        border: 1px solid #7bd37e;
+    }
+}
+.color-trap{
+    background-color: #f8bbd0;
+    p.description{
+        border: 1px solid #b85a7b;
+    }
+}
+.color-ritual{
+    background-color: #c5cae9;
+    p.description{
+        border: 1px solid #6671b8;
+    }
+}
+@media (min-width: 700px) {
+    .card-deck, .card-deck-size{
+        width: calc(100% / 8);
+    }
+}

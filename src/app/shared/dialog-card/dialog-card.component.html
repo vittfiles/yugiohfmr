@@ -1,0 +1,29 @@
+<section  [ngClass]="{
+    'full-card': true,
+    'color-monster': data.monster,
+    'color-magic': data.magic,
+    'color-trap': data.trap,
+    'color-ritual': data.ritual
+  }">
+    <p>{{ data.Name }}</p>
+    <img [src]="data.src" />
+    <p class="flex-p">{{data.Type}} <span class="example-spacer"></span> &#9733; {{data.Level}}</p>
+    <p class="description" >{{data.Description}}</p>
+    <p class="description" *ngIf="data.Materials">
+        {{ data.Materials }}
+    </p>
+    <div class="flex-p" *ngIf="data.monster">
+        <div>
+          <p>{{data.guardian1}}</p>
+          <p>{{data.guardian2}}</p>
+        </div>
+        <div>
+          <p>ATK: {{data.ATK}}</p>
+          <p>DEF: {{data.DEF}}</p>
+        </div>
+    </div>
+    <p>
+    {{ data.id }}
+    </p>
+    <button mat-mini-fab color="primary" (click)="close()">X</button>
+</section>

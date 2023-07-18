@@ -1,0 +1,35 @@
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title class="primary-color">Create a new deck</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="formCreateDeck" (ngSubmit)="submit()">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input type="name" matInput formControlName="name" placeholder="The name of your deck">
+          <mat-hint>Errors appear instantly!</mat-hint>
+          <mat-error *ngIf="formCreateDeck.get('name')?.hasError('minlength') && !formCreateDeck.get('name')?.hasError('required')">
+            Please enter at least 3 characters
+          </mat-error>
+          <mat-error *ngIf="formCreateDeck.controls.name.hasError('required')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Description</mat-label>
+          <textarea type="description" matInput formControlName="description" placeholder="The description of your deck"></textarea>
+          <mat-error *ngIf="formCreateDeck.controls.description.hasError('minlength') && !formCreateDeck.controls.description.hasError('required')">
+            Please enter at least 3 characters
+          </mat-error>
+          <mat-error *ngIf="formCreateDeck.controls.description.hasError('maxlength') && !formCreateDeck.controls.description.hasError('required')">
+            Please enter lowet than 50 characters
+          </mat-error>
+          <mat-error *ngIf="formCreateDeck.controls.description.hasError('required')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <button  mat-raised-button color="primary" >Create</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+  

@@ -1,0 +1,44 @@
+export interface CardYugioh {
+    "Name"?: string | null,
+    "Type"?: string | null,
+    "Guardian Star"?: string | null,
+    "ATK"?: string | number | null,
+    "DEF"?: string | number | null,
+    "Level"?: string | null,
+    "Description"?: string | null,
+    "Materials"?: string | null,
+    "id": string | number | null,
+    "Password"?: string | null,
+    "Star cost"?: string | null,
+    "src" ?: string | null,
+    monster?: boolean | null,
+    magic?: boolean | null,
+    trap?: boolean | null,
+    ritual?: boolean | null,
+    guardian1?: string | null,
+    guardian2?: string | null
+}
+
+export interface CardDeck {
+    id: number,
+    Name: string,
+    src: string
+}
+
+export interface Deck{
+    name: string,
+    cards: CardDeck[],
+    description: string
+}
+
+export interface CardFilter {
+    id: number,
+    position: number,
+    hide: boolean,
+    count: number,
+}
+//my cards
+export interface MyCard{
+    id: number,
+    count: number
+}

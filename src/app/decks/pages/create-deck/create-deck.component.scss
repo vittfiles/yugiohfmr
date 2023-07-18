@@ -1,0 +1,17 @@
+.form-card{
+    margin: 0px auto;
+    margin-top: 1rem;
+    max-width: 400px;
+    form{
+        display: flex;
+        flex-direction: column;
+
+        mat-form-field, button{
+            margin-top: 1rem;
+        }
+
+        textarea{
+            resize: none;
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<mat-card [ngClass]="{
+    'card-deck': true,
+    'color-monster': card?.monster,
+    'color-magic': card?.magic,
+    'color-trap': card?.trap,
+    'color-ritual': card?.ritual,
+  }">
+<mat-card-header>
+        <mat-card-subtitle [ngClass]="{'title-card-deck': true}" [attr.aria-label]="card?.Name" [attr.aria]="card?.Name">{{ card?.Name }}</mat-card-subtitle>
+      </mat-card-header>
+      <img [src]="card?.src" />
+      <mat-card-content>
+          <p>{{card?.Type}} <span class="example-spacer"></span> &#9733; {{card?.Level}}</p>
+      </mat-card-content>
+      <mat-card-content *ngIf="card?.monster" class="data-monster">
+        <div>
+          <p>{{card?.guardian1}}</p>
+          <p>{{card?.guardian2}}</p>
+        </div>
+        <div>
+          <p>ATK: {{card?.ATK}}</p>
+          <p>DEF: {{card?.DEF}}</p>
+        </div>
+      </mat-card-content>
+      <p *ngIf="!card?.monster" class="description">{{ card?.Description }}</p>
+      <p class="flex-p">
+        {{ card?.id }}
+        <span class="example-spacer"></span>
+        Total: {{ listData?.count }}
+      </p>
+      <!-- <mat-card-actions>
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+      </mat-card-actions> -->
+</mat-card>

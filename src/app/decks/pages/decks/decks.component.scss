@@ -1,0 +1,31 @@
+/* .main-list-decks{
+    display:flex;
+    width: 100%;
+} */
+.list-decks{
+    display: flex;
+    width: 80%;
+    padding-left: 1rem;
+    padding-top: 1rem;
+}
+.actions-list-decks{
+    display:flex;
+    flex-direction: column;
+    width: 20%;
+    padding: 1rem;
+    a, button{
+        margin-bottom: 1rem;
+    }
+}
+mat-card{
+    width: 25%;
+    padding: 1rem;
+    mat-card-title{
+        color: rgb(50, 50, 50);
+        padding-bottom: 1rem;
+    }
+    mat-card-content{
+        color: rgb(67, 67, 67);
+        padding-bottom: 1rem;
+    }
+}

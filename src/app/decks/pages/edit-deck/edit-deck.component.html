@@ -1,0 +1,43 @@
+<mat-tab-group (selectedTabChange)="changeTab($event)">
+    <mat-tab label="My cards">
+        <div class="section-tab">
+            <div class="limit-h scrollCardsSecond" (scroll)="getScrollSecond($event)"><!--  (click)="cardClickMyCards(i)" -->
+                <app-card-show *ngFor="let card of cardsDraw$ | async; index as i" [card]="card" [listData]="listMyCards[i]" [style.order]="listMyCards[i].position" [ngClass]="{
+                  'card-deck-size': true,
+                  'hide': listMyCards[i].hide
+                }"></app-card-show>
+            </div>
+            <div class="options-card">
+              <!-- <section class="filter-card">
+                <h4>Filter:</h4>
+                <mat-form-field>
+                  <mat-label>Search name</mat-label>
+                  <input type="text" matInput name="search" [(ngModel)]="searchMyCards" (ngModelChange)="updateFilterMyCards()" holder="The name of your deck">
+                </mat-form-field>
+                <div [formGroup]="filterInputMyCards">
+                  <mat-checkbox class="example-margin" color="primary" formControlName="monsters" (change)="updateFilterMyCards()" >Monsters</mat-checkbox>
+                  <mat-checkbox class="example-margin" color="primary" formControlName="magics" (change)="updateFilterMyCards()">Magics</mat-checkbox>
+                  <mat-checkbox class="example-margin" color="primary" formControlName="traps" (change)="updateFilterMyCards()">Traps</mat-checkbox>
+                  <mat-checkbox class="example-margin" color="primary" formControlName="rituals" (change)="updateFilterMyCards()">Rituals</mat-checkbox>
+                  <button mat-stroked-button>Reset filters</button>
+                </div>
+              </section>
+              <section class="filter-card">
+                <h4>Sorting by:</h4>
+                <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Sorting" >
+                  <mat-chip-option (selectionChange)="orderUpdateMyCards($event,'id')" selected>id</mat-chip-option>
+                  <mat-chip-option (selectionChange)="orderUpdateMyCards($event,'name')">Name</mat-chip-option>
+                  <mat-chip-option (selectionChange)="orderUpdateMyCards($event,'atk')">ATK</mat-chip-option>
+                  <mat-chip-option (selectionChange)="orderUpdateMyCards($event,'def')">DEF</mat-chip-option>
+                </mat-chip-listbox>
+                <mat-checkbox class="example-margin" color="primary" [formControl]="ascendingMyCards" (change)="updateFilterMyCards()">Ascending</mat-checkbox>
+                <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Sorting" >
+                  <mat-chip-option class="add-card-chip" (selectionChange)="removeCardToggle($event)">remove card</mat-chip-option>
+                </mat-chip-listbox>
+              </section> -->
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab [label]="'Deck: '+deck?.name">
+    </mat-tab>
+</mat-tab-group>

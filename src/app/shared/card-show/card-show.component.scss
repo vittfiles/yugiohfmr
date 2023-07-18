@@ -1,0 +1,72 @@
+.hide{
+    visibility: hidden;
+    position: absolute;
+}
+.card-deck{
+    display: flex;
+    flex-direction: column;
+    padding: .3rem;
+    mat-card-header{
+        width: 100%;
+        padding: .1rem 0rem;
+        overflow: hidden;
+        .title-card-deck{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
+            font-size: .65rem;
+            color:rgb(36, 36, 36);
+        }
+    }
+    img{
+        width: 100%;
+    }
+    mat-card-content{
+        display: flex;
+        flex-wrap: nowrap;
+        padding: 0rem;
+        div{
+            padding: .1rem .1rem;
+            width: 50%;
+            p{
+                font-size: .65rem;
+            }
+        }
+        p{
+            width: 100%;
+            padding: .2rem .1rem;
+            font-size: .7rem;
+            display: flex;
+        }
+    }
+    p{
+        font-size: .5rem;
+    }
+    p.description{
+        padding: .05rem;
+        margin-bottom: .1rem;
+    }
+    width: 100%;
+}
+.flex-p{display: flex;}
+.color-monster{
+    background-color: #fff9c4;
+}
+.color-magic{
+    background-color: #a5d6a7;
+    p.description{
+        border: 1px solid #7bd37e;
+    }
+}
+.color-trap{
+    background-color: #f8bbd0;
+    p.description{
+        border: 1px solid #b85a7b;
+    }
+}
+.color-ritual{
+    background-color: #c5cae9;
+    p.description{
+        border: 1px solid #6671b8;
+    }
+}

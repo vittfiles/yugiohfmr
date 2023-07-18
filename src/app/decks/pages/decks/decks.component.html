@@ -1,0 +1,18 @@
+<main class="main-list-decks">
+    <section class="list-decks">
+        <mat-card *ngFor="let deck of (decks$ | async) ; let i = index">
+            <mat-card-title>
+                {{ deck.name }}
+                <mat-divider></mat-divider>
+            </mat-card-title>
+            <mat-card-content>
+                {{ deck.description }}
+            </mat-card-content>
+            <a [routerLink]="'edit/'+i" mat-flat-button color="primary" >Edit Deck</a>
+        </mat-card>
+    </section>
+    <aside class="actions-list-decks">
+        <a routerLink="create" mat-flat-button color="primary" >Create Deck</a>
+        <button mat-flat-button color="primary" (click)="delLocalStorage()">Delete local storage</button>
+    </aside>
+</main>
