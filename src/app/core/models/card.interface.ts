@@ -21,8 +21,7 @@ export interface CardYugioh {
 
 export interface CardDeck {
     id: number,
-    Name: string,
-    src: string
+    Name: string
 }
 
 export interface Deck{
@@ -36,6 +35,8 @@ export interface CardFilter {
     position: number,
     hide: boolean,
     count: number,
+    use?: number,
+    showUse?: boolean
 }
 //my cards
 export interface MyCard{

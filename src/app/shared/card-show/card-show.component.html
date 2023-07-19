@@ -26,7 +26,9 @@
       <p class="flex-p">
         {{ card?.id }}
         <span class="example-spacer"></span>
-        Total: {{ listData?.count }}
+        <span *ngIf="listData?.showUse">Use: {{ listData?.use }}</span>
+        <span class="example-spacer"></span>
+        <span *ngIf="listData?.count">Total: {{ listData?.count }}</span>
       </p>
       <!-- <mat-card-actions>
         <button mat-button>LIKE</button>

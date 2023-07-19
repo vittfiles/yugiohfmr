@@ -19,6 +19,7 @@ export class CardapiService {
   
   private _decks: BehaviorSubject<Deck[]> = new BehaviorSubject<Deck[]>([]);
   private _currentDeck$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
+  private _currentDeckBase$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
 
   constructor(private httpClient: HttpClient) {
   }
@@ -65,6 +66,71 @@ export class CardapiService {
     if(myCardsInStorage)
       this._myCardsList$.next(JSON.parse(myCardsInStorage));
   }
+  addCardToDeck(deckId: number,cardId: number){
+    let newDecks = this._decks.getValue();
+    let limit = 0;
+    let limitElement = this._myCardsList$.getValue().find(c => c.id === cardId);
+    if(limitElement){
+      limit = limitElement.count;
+    }
+    let count = newDecks[deckId].cards.filter(c=>c.id === cardId);
+    if(count.length < limit){
+      newDecks[deckId].cards.push({
+        id: cardId,
+        Name: ""
+      });
+  
+      let dataCards = this.items$.getValue();
+      let newCardsForCurrentDeck: CardYugioh[] = [];
+      newDecks[deckId].cards.forEach(c=>{
+        newCardsForCurrentDeck.push(dataCards[c.id-1]);
+      })
+  
+      this._decks.next(newDecks);
+      this._currentDeck$.next(newCardsForCurrentDeck);
+      this._currentDeckBase$.next(newCardsForCurrentDeck);
+      /* console.log("new deck : ",newDecks,newCardsForCurrentDeck); */
+      localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(newDecks));
+    }else{
+      console.log("Limite alcanzado");
+    }
+  }
+  removeCardToDeck(deckId: number,cardId: number){
+    let newDecks = this._decks.getValue();
+    let noRemove = true;
+    
+    newDecks[deckId].cards = newDecks[deckId].cards.filter(c => {
+      if(noRemove){
+        if(c.id !== cardId){
+          return true;
+        }else{
+          noRemove = false;
+          return false;
+        }
+      }else{
+        return true;
+      }
+    } );
+    noRemove = true;
+    let newCardsForCurrentDeck: CardYugioh[] = this._currentDeckBase$.getValue().filter(c => {
+      if(noRemove){
+        if(c.id !== cardId){
+          return true;
+        }else{
+          noRemove = false;
+          return false;
+        }
+      }else{
+        return true;
+      }
+    });
+
+    
+    this._decks.next(newDecks);
+    this._currentDeck$.next(newCardsForCurrentDeck);
+    this._currentDeckBase$.next(newCardsForCurrentDeck);
+    localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(newDecks));
+  }
 
   getItemsDraw(): Observable<CardYugioh[]> {
     return this.items$.asObservable();
@@ -79,6 +145,27 @@ export class CardapiService {
   getMyCardsList(): Observable<MyCard[]> {
     return this._myCardsList$.asObservable();
   }
+  getCurrentDeck(): Observable<CardYugioh[]>{
+    return this._currentDeck$.asObservable();
+  }
+  getTotalOfCurrentDeck(cardId: number):number{
+    let total = 0;
+    let cards = this._currentDeckBase$.getValue().filter(c => c.id === cardId);
+    if(cards){
+      total = cards.length;
+    }
+    return total;
+  }
+  setCurrentDeck(deckId: number){
+    let newCardsForCurrentDeck: CardYugioh[] = [];
+    let dataCards = this.items$.getValue();
+    this._decks.getValue()[deckId].cards.forEach(c => {
+      newCardsForCurrentDeck.push(dataCards[c.id-1]);
+    });
+    this._currentDeck$.next(newCardsForCurrentDeck);
+    this._currentDeckBase$.next(newCardsForCurrentDeck);
+  }
+
   addCardMyCardList(id:number){
     let cardExist = this._myCardsList$.getValue().find(card=> card.id === id);
     if(cardExist){
@@ -115,7 +202,7 @@ export class CardapiService {
     console.log(this._myCardsList$.getValue());
   }
 
-  filterCards(obj: any): void{
+  filterCardsOld(obj: any): void{
     /* console.log("inicio filtro") */
     let res = [...this.items$.getValue()];
     if(obj.filters){
@@ -178,6 +265,77 @@ export class CardapiService {
     }
     /* console.log("termino filtro",res) */
   }
+  filterCards(obj: any): void{
+    /* console.log("inicio filtro") */
+    let res = [];
+    if(obj.currentDeck){
+      res = [...this._currentDeckBase$.getValue()];
+    }else{
+      res = [...this.items$.getValue()];
+    }
+
+    if(obj.filters){
+      res = res.filter(card => {
+        if(obj.filters.monsters && card.monster)return true;
+        if(obj.filters.magics && card.magic)return true;
+        if(obj.filters.traps && card.trap)return true;
+        if(obj.filters.rituals && card.ritual)return true;
+        return false;
+      });
+    }
+    if(obj.search){
+      res = res.filter(card => {
+        return card.Name?.toLowerCase().includes(obj.search.toLowerCase());
+      })
+    }
+    if(obj.order){
+      if(obj.order === 'id')
+        res.sort((a, b) => ((a.id as number) > (b.id as number)) ? obj.ascending*1 : obj.ascending*(-1))
+      else if(obj.order === 'name')
+        res.sort((a, b) => ((a.Name as string) > (b.Name as string)) ? obj.ascending*1 : obj.ascending*(-1))
+      else if(obj.order === 'atk')
+        res.sort((a, b) => {
+          if(a.monster && b.monster){
+            if((a.ATK as number) > (b.ATK as number)){
+              return obj.ascending*1;
+            }else{
+              return obj.ascending*(-1);
+            }
+          }else if(!a.monster){
+            return 1;
+          }else{
+            return -1;
+          }
+        })
+      if(obj.order === 'def')
+        res.sort((a, b) => {
+          if(a.monster && b.monster){
+            if((a.DEF as number) > (b.DEF as number)){
+              return obj.ascending*1;
+            }else{
+              return obj.ascending*(-1);
+            }
+          }else if(!a.monster){
+            return 1;
+          }else{
+            return -1;
+          }
+        })
+    }
+    
+    if(obj.myCards){
+      res = res.filter(card => {
+        if(this._myCardsList$.getValue().find(mycard=> mycard.id === card.id))return true;
+        return false;
+      });
+      this._myCards$.next(res);
+    }else if(obj.currentDeck){
+      this._currentDeck$.next(res);
+    }else{
+      this._cards$.next(res);
+    }
+    /* console.log("termino filtro",res) */
+  }
 
   getDecks(): Observable<Deck[]>{
     return this._decks.asObservable();
@@ -190,10 +348,6 @@ export class CardapiService {
       cards: [],
       description: description
     }]);
-  }
-
-  getCurrentDeck(): Observable<CardYugioh[]>{
-    return this._currentDeck$.asObservable();
   }
 /*   deleteMazo(position: number){
     if(position < this._decks.length){
