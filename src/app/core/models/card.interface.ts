@@ -43,3 +43,31 @@ export interface MyCard{
     id: number,
     count: number
 }
+
+//character info 
+export interface CardCharacter{
+    id: number,
+    name: string,
+    chance100: number,
+    chance2048: number
+}
+
+export interface Character{
+    "name": string,
+    "deck": CardCharacter[],
+    src: string
+}
+
+export interface CardCharacterShow{
+    id: number,
+    name: string,
+    chance100: number,
+    chance2048: number,
+    card: CardYugioh
+}
+
+export interface CharacterShow{
+    name: string,
+    src: string,
+    deck: CardCharacter[]
+}

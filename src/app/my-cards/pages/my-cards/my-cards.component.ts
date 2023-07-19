@@ -200,6 +200,10 @@ export class MyCardsComponent implements OnInit, OnDestroy{
   filter(){
     //this.cardApiService.filterCards();
   }
+  addAllCards(){
+    this.cardApiService.addAllCards();
+    this.updateMyCardList();
+  }
   //scroll controller
   scrollPosition: number = 0;
   getScroll(e: any){

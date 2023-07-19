@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'my-cards',
     loadChildren: ()=> import('./my-cards/my-cards.module').then(m=>m.MyCardsModule)
+  },
+  {
+    path: 'characters',
+    loadChildren: ()=> import('./characters/characters.module').then(m=>m.CharactersModule)
   }
 ];
 

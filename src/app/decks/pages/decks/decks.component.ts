@@ -15,6 +15,10 @@ export class DecksComponent {
     this.decks$ = this.cardApiService.getDecks();
   }
 
+  deleteDeck(i:number){
+    this.cardApiService.deleteDeck(i);
+  }
+
   delLocalStorage(){
     localStorage.clear()
   }

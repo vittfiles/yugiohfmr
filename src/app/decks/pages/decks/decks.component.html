@@ -9,6 +9,7 @@
                 {{ deck.description }}
             </mat-card-content>
             <a [routerLink]="'edit/'+i" mat-flat-button color="primary" >Edit Deck</a>
+            <button mat-flat-button (click)="deleteDeck(i)" color="warn" style="margin-top: 1rem;">Delete Deck</button>
         </mat-card>
     </section>
     <aside class="actions-list-decks">

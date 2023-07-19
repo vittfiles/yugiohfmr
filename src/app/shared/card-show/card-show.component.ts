@@ -11,5 +11,8 @@ export class CardShowComponent {
   card?: CardYugioh;
   @Input()
   listData?: CardFilter;
-
+  @Input()
+  chance100?: number;
+  @Input()
+  chanceShow?: boolean;
 }
