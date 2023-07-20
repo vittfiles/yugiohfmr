@@ -39,7 +39,7 @@ export class CardapiService {
             card.guardian2 = stars[1] || "";
           }
           card.id = Number.parseInt(card.id as string);
-          card.src = "/assets/imgCard/"+ card.id + "-data.png";
+          card.src = "assets/imgCard/"+ card.id + "-data.png";
           card.monster = this.typeMonster(card);
           card.magic = this.typeMagic(card);
           card.trap = this.typeTrap(card);
