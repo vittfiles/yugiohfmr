@@ -2,23 +2,27 @@
     display:flex;
     width: 100%;
 } */
+.main-list-decks{
+    display: flex;
+    flex-direction: column;
+}
 .list-decks{
     display: flex;
-    width: 80%;
+    width: 100%;
     padding-left: 1rem;
     padding-top: 1rem;
 }
 .actions-list-decks{
     display:flex;
     flex-direction: column;
-    width: 20%;
+    width: 100%;
     padding: 1rem;
     a, button{
         margin-bottom: 1rem;
     }
 }
 mat-card{
-    width: 25%;
+    width: 50%;
     padding: 1rem;
     mat-card-title{
         color: rgb(50, 50, 50);
@@ -27,5 +31,24 @@ mat-card{
     mat-card-content{
         color: rgb(67, 67, 67);
         padding-bottom: 1rem;
+    }
+}
+@media (min-width: 500px) {
+    mat-card{
+        width: calc(100% / 3);
+    }
+    .main-list-decks{
+        flex-direction: row;
+    }
+    .list-decks{
+        width: 80%;
+    }
+    .actions-list-decks{
+        width: 20%;
+    }
+}
+@media (min-width: 700px) {
+    mat-card{
+        width: 25%;
     }
 }
