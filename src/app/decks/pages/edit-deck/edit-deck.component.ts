@@ -105,6 +105,7 @@ export class EditDeckComponent implements OnDestroy {
       /* this.list.forEach(c=>c.count = 0); */
       this.updateMyCardList();
       this.updateFilterCurrentDeck();
+      this.updateFilterMyCards();
     }else{
       let data;
       this.cardsDraw$.forEach(cards=>{
@@ -128,6 +129,7 @@ export class EditDeckComponent implements OnDestroy {
       //this.list.forEach(c=>c.count = 0);
       this.updateMyCardList();
       this.updateFilterCurrentDeck();
+      this.updateFilterMyCards();
     }else{
       let data;
       this.cardsDraw$.forEach(cards=>{

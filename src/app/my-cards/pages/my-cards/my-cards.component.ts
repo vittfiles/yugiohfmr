@@ -114,6 +114,7 @@ export class MyCardsComponent implements OnInit, OnDestroy{
       });
       this.list.forEach(c=>c.count = 0);
       this.updateMyCardList();
+      this.updateFilterMyCards()
     }else{
       console.log(id);
       let data;

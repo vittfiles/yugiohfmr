@@ -1,0 +1,18 @@
+@media (max-width: 500px) {
+    mat-toolbar{
+        height: 6vh;
+        padding: 2px;
+        h1{
+            font-size: .8rem;
+        }
+        a{
+            padding: 2px;
+        }
+        a span{
+            padding: 0rem;
+        }
+        .mdc-button{
+            min-width: auto;
+        }
+    }
+}

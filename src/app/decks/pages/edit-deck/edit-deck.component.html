@@ -38,7 +38,7 @@
             </div>
         </div>
     </mat-tab>
-    <mat-tab [label]="'Deck: '+deck?.name">
+    <mat-tab [label]="deck?.name+' ('+(currentDeck$ | async)?.length+')'">
       <div class="section-tab">
         <div class="limit-h scrollCardsSecond" (scroll)="getScrollSecond($event)">
           <app-card-show *ngFor="let card of currentDeck$ | async; index as i" [card]="card" (click)="cardClickCurrentDeck(card.id)" [ngClass]="{

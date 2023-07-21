@@ -15,4 +15,5 @@ export class CardShowComponent {
   chance100?: number;
   @Input()
   chanceShow?: boolean;
+  
 }

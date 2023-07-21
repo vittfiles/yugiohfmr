@@ -1,10 +1,10 @@
 .limit-h{
-    width: 80%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
-    height: 75vh;
+    height: 65vh;
     overflow-y: scroll;
     padding: .2rem;
     margin-top: .3rem;
@@ -14,9 +14,9 @@
     border-radius: .5rem;
 }
 .options-card{
-    width: 15%;
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     padding: .5rem;
     section{
         width: 100%;
@@ -25,11 +25,14 @@
 .section-tab{
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
+    flex-direction: column-reverse;
+    width: 100%;
+    overflow-x: hidden;
 }
 .filter-card{
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    flex-direction: row;
     div{
         display: flex;
         flex-direction: column;
@@ -59,53 +62,7 @@
 .card-deck-size{
     display: flex;
     justify-content: stretch;
-    width: 25%;
-}
-.card-deck{
-    display: flex;
-    flex-direction: column;
-    padding: .3rem;
-    mat-card-header{
-        width: 100%;
-        padding: .1rem 0rem;
-        overflow: hidden;
-        .title-card-deck{
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: clip;
-            font-size: .65rem;
-            color:rgb(36, 36, 36);
-        }
-    }
-    img{
-        width: 100%;
-    }
-    mat-card-content{
-        display: flex;
-        flex-wrap: nowrap;
-        padding: 0rem;
-        div{
-            padding: .1rem .1rem;
-            width: 50%;
-            p{
-                font-size: .65rem;
-            }
-        }
-        p{
-            width: 100%;
-            padding: .2rem .1rem;
-            font-size: .7rem;
-            display: flex;
-        }
-    }
-    p{
-        font-size: .5rem;
-    }
-    p.description{
-        padding: .05rem;
-        margin-bottom: .1rem;
-    }
-    width: 25%;
+    width: calc(100% / 3);
 }
 .flex-p{display: flex;}
 .color-monster{
@@ -127,6 +84,48 @@
     background-color: #c5cae9;
     p.description{
         border: 1px solid #6671b8;
+    }
+}
+@media (min-width: 500px){
+    .card-deck, .card-deck-size{
+        width: 20%;
+    }
+    .limit-h{
+        width: 80%;
+    }
+    .section-tab{
+        flex-direction: row;
+    }
+    .options-card{
+        width: 15%;
+        display: flex;
+        flex-direction: column;
+        padding: .5rem;
+    }
+    .filter-card{
+        display: flex;
+        flex-direction: column;
+        div{
+            display: flex;
+            flex-direction: column;
+        }
+        mat-chip-listbox{
+            width: 100%;
+            mat-chip-option{
+                width: 40%;
+            }
+            mat-chip-option.add-card-chip{
+                width: auto;
+            }
+        }
+        mat-button-toggle-group{
+            width: 100%;
+            mat-button-toggle{
+                padding-top: .3rem;
+                padding-bottom: .3rem;
+                width: 50%;
+            }
+        }
     }
 }
 @media (min-width: 700px) {
