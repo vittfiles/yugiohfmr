@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CardapiService } from './core/services/cardapi.service';
 import { CardYugioh } from './core/models/card.interface';
 import { Observable } from 'rxjs';
+import { CharactersService } from './core/services/characters.service';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,13 @@ export class AppComponent implements OnInit{
   title = 'yugiohfmr';
  /*  cards$: Observable<CardYugioh[]>; */
 
-  constructor(private cardApiService: CardapiService){
+  constructor(private cardApiService: CardapiService,private charactersService: CharactersService){
     /* this.cards$ = this.cardApiService.getItems(); */
     //document.documentElement.style.setProperty('--theme-l-d', 'light');
   }
 
   ngOnInit(): void {
     this.cardApiService.fetchList();
+    this.charactersService.fetchList();
   }
 }

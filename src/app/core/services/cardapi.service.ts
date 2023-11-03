@@ -39,6 +39,7 @@ export class CardapiService {
             card.guardian2 = stars[1] || "";
           }
           card.id = Number.parseInt(card.id as string);
+          card.idInt = card.id;
           card.src = "assets/imgCard/"+ card.id + "-data.png";
           card.monster = this.typeMonster(card);
           card.magic = this.typeMagic(card);
@@ -213,7 +214,7 @@ export class CardapiService {
       }]);
     }
     localStorage.setItem(this.MY_CARDS_IN_STORAGE,JSON.stringify(this._myCardsList$.getValue()));
-    console.log(this._myCardsList$.getValue());
+    /* console.log(this._myCardsList$.getValue()); */
   }
   removeCardMyCardList(id:number){
     let cardExist = this._myCardsList$.getValue().find(card=> card.id === id);
@@ -229,7 +230,7 @@ export class CardapiService {
       }
     }
     localStorage.setItem(this.MY_CARDS_IN_STORAGE,JSON.stringify(this._myCardsList$.getValue()));
-    console.log(this._myCardsList$.getValue());
+    /* console.log(this._myCardsList$.getValue()); */
   }
 
   filterCards(obj: any): void{
@@ -397,6 +398,11 @@ export class CardapiService {
     let res = this._decks.getValue().filter((d,i)=> i !== id);
     this._decks.next(res);
     localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(res));
+  }
+  removeAllCards(){
+    this._myCards$.next([]);
+    this._myCardsList$.next([]);
+    localStorage.setItem(this.MY_CARDS_IN_STORAGE,JSON.stringify(this._myCardsList$.getValue()));
   }
   addAllCards(){
     let allCards: MyCard[] = [];

@@ -4,9 +4,8 @@
 
 <div class="section-tab">
     <div class="limit-h scrollCards"><!--   [listData]="listMyCards[i]" (click)="cardClickMyCards(i)" [style.order]="listMyCards[i].position"  -->
-        <app-card-show *ngFor="let card of cardCharacter$ | async; index as i" [card]="card.card" [chanceShow]="true" [chance100]="card.chance100" [ngClass]="{
-          'card-deck-size': true,
-          'hide': false
+        <app-card-show *ngFor="let card of cardCharacter$ | async; index as i; trackBy: trackByItems" [card]="card.card" [chanceShow]="true" [chance100]="card.chance100" [ngClass]="{
+          'card-deck-size': true
         }"></app-card-show>
     </div>
     <div class="options-card">

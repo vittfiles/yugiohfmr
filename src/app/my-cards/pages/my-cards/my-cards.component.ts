@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CardapiService } from 'src/app/core/services/cardapi.service';
 import { CardFilter, CardYugioh, MyCard } from 'src/app/core/models/card.interface';
@@ -15,14 +15,13 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './my-cards.component.html',
   styleUrls: ['./my-cards.component.scss']
 })
-export class MyCardsComponent implements OnInit, OnDestroy{
+export class MyCardsComponent implements OnInit, AfterViewChecked, OnDestroy{
   notifier = new Subject();
-  title = 'yugiohfmr';
-  cardsDraw$: Observable<CardYugioh[]>;
+  
   cards$: Observable<CardYugioh[]>;
   list: CardFilter[] = [];
-
-  primary: string= 'primary';
+  limit: number = 30;
+  total: number = 730;
 
   orderObject: string = 'id';
   search: string = "";
@@ -39,6 +38,9 @@ export class MyCardsComponent implements OnInit, OnDestroy{
   myCards$: Observable<CardYugioh[]>;
   myCardList$: Observable<MyCard[]>;
   listMyCards: CardFilter[] = [];
+  limitMyCard: number = 30;
+  totalMyCard: number = 730;
+  firstUpdateMyCard: boolean = true;
 
   orderObjectMyCards: string = 'id';
   searchMyCards: string = "";
@@ -52,7 +54,6 @@ export class MyCardsComponent implements OnInit, OnDestroy{
   removeCard: boolean = false;
   
   constructor(public cardApiService: CardapiService,public dialog: MatDialog){
-    this.cardsDraw$ = this.cardApiService.getItemsDraw();
     this.cards$ = this.cardApiService.getItems().pipe(takeUntil(this.notifier));
     this.myCards$ = this.cardApiService.getMyCards().pipe(takeUntil(this.notifier));
     this.myCardList$ = this.cardApiService.getMyCardsList().pipe(takeUntil(this.notifier));
@@ -78,7 +79,6 @@ export class MyCardsComponent implements OnInit, OnDestroy{
   updateMyCardList(){
     this.myCardList$.forEach(cards=>{
       cards.forEach(card=>{
-        this.listMyCards[card.id-1].hide = false;
         this.listMyCards[card.id-1].count = card.count;
         this.list[card.id-1].count = card.count;
       })
@@ -87,49 +87,34 @@ export class MyCardsComponent implements OnInit, OnDestroy{
 
   addCardToggle(event:any){ this.addCard = event.selected; }
   removeCardToggle(event:any){ this.removeCard = event.selected; }
-  cardClick(id: number){
+  cardClick(c: CardYugioh){
     if(this.addCard){
-      console.log("agregar "+id);
-      this.cardApiService.addCardMyCardList(id+1);
+      console.log("agregar "+c.id);
+      this.cardApiService.addCardMyCardList(c.idInt);
       this.updateMyCardList();
+      this.updateFilterMyCards();
     }else{
-      console.log(id);
-      let data;
-      this.cardsDraw$.forEach(cards=>{
-        data = cards[id];
-      })
       const dialogRef = this.dialog.open(DialogCardComponent, {
-        data: data,
+        data: c,
       });
     }
   }
-  cardClickMyCards(id: number){
+  cardClickMyCards(c: CardYugioh){
     if(this.removeCard){
-      console.log("quitar "+id);
-      this.cardApiService.removeCardMyCardList(id+1);
-
-      this.listMyCards.forEach(c=>{
-        c.hide = true;
-        c.count = 0;
-      });
+      console.log("quitar "+c.id);
+      this.cardApiService.removeCardMyCardList(c.idInt);
+      this.listMyCards.forEach(c=>c.count = 0);
       this.list.forEach(c=>c.count = 0);
       this.updateMyCardList();
-      this.updateFilterMyCards()
+      this.updateFilterMyCards();
     }else{
-      console.log(id);
-      let data;
-      this.cardsDraw$.forEach(cards=>{
-        data = cards[id];
-      })
       const dialogRef = this.dialog.open(DialogCardComponent, {
-        data: data,
+        data: c,
       });
     }
   }
 
   orderUpdate(event: any,type: string){
-    /* console.log(event);
-    console.log(type); */
     if(event.selected){
       this.orderObject = type;
     }else{
@@ -138,8 +123,6 @@ export class MyCardsComponent implements OnInit, OnDestroy{
     this.updateFilter();
   }
   orderUpdateMyCards(event: any,type: string){
-    /* console.log(event);
-    console.log(type); */
     if(event.selected){
       this.orderObjectMyCards = type;
     }else{
@@ -148,6 +131,7 @@ export class MyCardsComponent implements OnInit, OnDestroy{
     this.updateFilterMyCards();
   }
   updateFilter(){
+    this.limit = 30;
     if(!this.filterInput.controls.monsters.value && !this.filterInput.controls.magics.value && !this.filterInput.controls.traps.value && !this.filterInput.controls.rituals.value){
       this.cardApiService.filterCards({order: this.orderObject,ascending: this.ascending.value ? 1 : -1, search: this.search});
     }else{
@@ -163,16 +147,9 @@ export class MyCardsComponent implements OnInit, OnDestroy{
         search: this.search
       });
     }
-    this.list.forEach(e=>e.hide=true)
-    this.cards$.forEach(cards=>{
-      cards.forEach((card, i)=>{
-        let id = card.id as number;
-        this.list[id-1].hide = false;
-        this.list[id-1].position = i+1;
-      })
-    })
   }
   updateFilterMyCards(){
+    this.limitMyCard = 30;
     if(!this.filterInputMyCards.controls.monsters.value && !this.filterInputMyCards.controls.magics.value && !this.filterInputMyCards.controls.traps.value && !this.filterInputMyCards.controls.rituals.value){
       this.cardApiService.filterCards({order: this.orderObjectMyCards,myCards:true, ascending: this.ascendingMyCards.value ? 1 : -1, search: this.searchMyCards});
     }else{
@@ -189,22 +166,18 @@ export class MyCardsComponent implements OnInit, OnDestroy{
         search: this.searchMyCards
       });
     }
-    this.listMyCards.forEach(e=>e.hide=true)
-    this.myCards$.forEach(cards=>{
-      cards.forEach((card, i)=>{
-        let id = card.id as number;
-        this.listMyCards[id-1].hide = false;
-        this.listMyCards[id-1].position = i+1;
-      })
-    })
-  }
-  filter(){
-    //this.cardApiService.filterCards();
   }
   addAllCards(){
     this.cardApiService.addAllCards();
     this.updateMyCardList();
+    this.updateFilterMyCards();
   }
+  removeAllCards(){
+    this.cardApiService.removeAllCards();
+    this.listMyCards.forEach(c=>c.count = 0);
+    this.list.forEach(c=>c.count = 0);
+  }
+
   //scroll controller
   scrollPosition: number = 0;
   getScroll(e: any){
@@ -219,6 +192,33 @@ export class MyCardsComponent implements OnInit, OnDestroy{
   changeTab(e: MatTabChangeEvent){
     document.querySelector('.scrollCards')?.scrollTo(0,this.scrollPosition);
     document.querySelector('.scrollCardsSecond')?.scrollTo(0,this.scrollPositionSecond);
+  }
+
+  //code to render cards
+  trackByItems(index: number,item: CardYugioh){
+    return item.id;
+  }
+  ngAfterViewChecked() {
+    // viewChild is updated after the view has been checked
+    //console.log('AfterViewChecked (no change)');
+    if(this.limit < this.total){
+      setTimeout(()=>{
+        if(this.limit < this.total)
+          this.limit += 150;
+        /* console.log(this.limit); */
+      },50);
+    }
+    if(this.limitMyCard < this.totalMyCard){
+      setTimeout(()=>{
+        if(this.limitMyCard < this.totalMyCard)
+          this.limitMyCard += 150;
+        if(this.firstUpdateMyCard){
+          this.firstUpdateMyCard=false;
+          this.updateFilterMyCards();
+        }
+        /* console.log(this.limitMyCard); */
+      },50);
+    }
   }
   
   ngOnDestroy(): void {

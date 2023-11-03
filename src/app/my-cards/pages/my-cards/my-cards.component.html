@@ -2,10 +2,11 @@
     <mat-tab label="All cards">
       <div class="section-tab">
         <div class="limit-h scrollCards" (scroll)="getScroll($event)">
-            <app-card-show *ngFor="let card of cardsDraw$ | async; index as i" [card]="card" [listData]="list[i]" (click)="cardClick(i)" [style.order]="list[i].position" [ngClass]="{
-              'card-deck-size': true,
-              'hide': list[i].hide
+          <ng-container  *ngFor="let card of cards$ | async; index as i; trackBy: trackByItems">
+            <app-card-show *ngIf="i<limit" [card]="card" [listData]="list[card.idInt - 1]" (click)="cardClick(card)"  [ngClass]="{
+              'card-deck-size': true
             }"></app-card-show>
+          </ng-container>
         </div>
         <div class="options-card">
           <section class="filter-card">
@@ -15,10 +16,10 @@
               <input type="text" matInput name="search" [(ngModel)]="search" (ngModelChange)="updateFilter()" holder="The name of your deck">
             </mat-form-field>
             <div [formGroup]="filterInput">
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="monsters" (change)="updateFilter()" >Monsters</mat-checkbox>
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="magics" (change)="updateFilter()">Magics</mat-checkbox>
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="traps" (change)="updateFilter()">Traps</mat-checkbox>
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="rituals" (change)="updateFilter()">Rituals</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="monsters" (change)="updateFilter()" >Monsters</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="magics" (change)="updateFilter()">Magics</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="traps" (change)="updateFilter()">Traps</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="rituals" (change)="updateFilter()">Rituals</mat-checkbox>
             </div>
           </section>
           <section class="filter-card">
@@ -29,10 +30,11 @@
               <mat-chip-option (selectionChange)="orderUpdate($event,'atk')">ATK</mat-chip-option>
               <mat-chip-option (selectionChange)="orderUpdate($event,'def')">DEF</mat-chip-option>
             </mat-chip-listbox>
-            <mat-checkbox class="example-margin" [color]="primary" [formControl]="ascending" (change)="updateFilter()">Ascending</mat-checkbox>
+            <mat-checkbox class="example-margin" [color]="'primary'" [formControl]="ascending" (change)="updateFilter()">Ascending</mat-checkbox>
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Sorting" >
               <mat-chip-option class="add-card-chip" (selectionChange)="addCardToggle($event)">add card</mat-chip-option>
             </mat-chip-listbox>
+            <button mat-flat-button color="warn" (click)="removeAllCards()">Remove All Cards</button>
           </section>
         </div>
       </div>
@@ -40,10 +42,11 @@
     <mat-tab label="My cards">
       <div class="section-tab">
         <div class="limit-h scrollCardsSecond" (scroll)="getScrollSecond($event)">
-            <app-card-show *ngFor="let card of cardsDraw$ | async; index as i" [card]="card" [listData]="listMyCards[i]" (click)="cardClickMyCards(i)" [style.order]="listMyCards[i].position" [ngClass]="{
-              'card-deck-size': true,
-              'hide': listMyCards[i].hide
+          <ng-container *ngFor="let card of myCards$ | async; index as i; trackBy: trackByItems">
+            <app-card-show *ngIf="i<limitMyCard" [card]="card" [listData]="listMyCards[card.idInt - 1]" (click)="cardClickMyCards(card)" [style.order]="listMyCards[i].position" [ngClass]="{
+              'card-deck-size': true
             }"></app-card-show>
+          </ng-container>
         </div>
         <div class="options-card">
           <section class="filter-card">
@@ -53,10 +56,10 @@
               <input type="text" matInput name="search" [(ngModel)]="searchMyCards" (ngModelChange)="updateFilterMyCards()" holder="The name of your deck">
             </mat-form-field>
             <div [formGroup]="filterInputMyCards">
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="monsters" (change)="updateFilterMyCards()" >Monsters</mat-checkbox>
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="magics" (change)="updateFilterMyCards()">Magics</mat-checkbox>
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="traps" (change)="updateFilterMyCards()">Traps</mat-checkbox>
-              <mat-checkbox class="example-margin" [color]="primary" formControlName="rituals" (change)="updateFilterMyCards()">Rituals</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="monsters" (change)="updateFilterMyCards()" >Monsters</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="magics" (change)="updateFilterMyCards()">Magics</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="traps" (change)="updateFilterMyCards()">Traps</mat-checkbox>
+              <mat-checkbox class="example-margin" [color]="'primary'" formControlName="rituals" (change)="updateFilterMyCards()">Rituals</mat-checkbox>
             </div>
           </section>
           <section class="filter-card">
@@ -67,7 +70,7 @@
               <mat-chip-option (selectionChange)="orderUpdateMyCards($event,'atk')">ATK</mat-chip-option>
               <mat-chip-option (selectionChange)="orderUpdateMyCards($event,'def')">DEF</mat-chip-option>
             </mat-chip-listbox>
-            <mat-checkbox class="example-margin" [color]="primary" [formControl]="ascendingMyCards" (change)="updateFilterMyCards()">Ascending</mat-checkbox>
+            <mat-checkbox class="example-margin" [color]="'primary'" [formControl]="ascendingMyCards" (change)="updateFilterMyCards()">Ascending</mat-checkbox>
             <mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Sorting" >
               <mat-chip-option class="add-card-chip" (selectionChange)="removeCardToggle($event)">remove card</mat-chip-option>
             </mat-chip-listbox>

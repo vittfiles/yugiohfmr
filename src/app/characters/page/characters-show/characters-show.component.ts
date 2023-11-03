@@ -3,8 +3,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { CardCharacterShow } from 'src/app/core/models/card.interface';
-import { CardapiService } from 'src/app/core/services/cardapi.service';
+import { CardCharacterShow, CardYugioh } from 'src/app/core/models/card.interface';
+import { CharactersService } from 'src/app/core/services/characters.service';
 
 @Component({
   selector: 'app-characters-show',
@@ -26,12 +26,12 @@ export class CharactersShowComponent {
   });
   ascending = new FormControl(false);
 
-  constructor(public route: ActivatedRoute, public cardApiService: CardapiService, public dialog: MatDialog){
+  constructor(public route: ActivatedRoute, public charactersService: CharactersService, public dialog: MatDialog){
     this.route.params.pipe(takeUntil(this.notifier)).subscribe(params => {
       if(!Number.isNaN(params['id']))
       this.deckId = Number.parseInt(params['id']);
     });
-    this.cardCharacter$ = cardApiService.getCurrentCharacter(this.deckId);
+    this.cardCharacter$ = charactersService.getCurrentCharacter(this.deckId);
     this.updateFilter();
   }
   orderUpdate(event: any,type: string){
@@ -44,9 +44,9 @@ export class CharactersShowComponent {
   }
   updateFilter(){
     if(!this.filterInput.controls.monsters.value && !this.filterInput.controls.magics.value && !this.filterInput.controls.traps.value && !this.filterInput.controls.rituals.value){
-      this.cardApiService.filterCharacterCards({order: this.orderObject, ascending: this.ascending.value ? 1 : -1, search: this.search});
+      this.charactersService.filterCharacterCards({order: this.orderObject, ascending: this.ascending.value ? 1 : -1, search: this.search});
     }else{
-      this.cardApiService.filterCharacterCards({
+      this.charactersService.filterCharacterCards({
         filters: {
           monsters: this.filterInput.controls.monsters.value,
           magics: this.filterInput.controls.magics.value,
@@ -58,14 +58,10 @@ export class CharactersShowComponent {
         search: this.search
       });
     }
-    /* this.listMyCards.forEach(e=>e.hide=true)
-    this.myCards$.forEach(cards=>{
-      cards.forEach((card, i)=>{
-        let id = card.id as number;
-        this.listMyCards[id-1].hide = false;
-        this.listMyCards[id-1].position = i+1;
-      })
-    }) */
+  }
+  //code to render cards
+  trackByItems(index: number,item: CardCharacterShow){
+    return item.id;
   }
   
   ngOnDestroy(): void {

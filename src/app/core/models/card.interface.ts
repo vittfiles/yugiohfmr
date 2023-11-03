@@ -16,7 +16,8 @@ export interface CardYugioh {
     trap?: boolean | null,
     ritual?: boolean | null,
     guardian1?: string | null,
-    guardian2?: string | null
+    guardian2?: string | null,
+    idInt: number
 }
 
 export interface CardDeck {
