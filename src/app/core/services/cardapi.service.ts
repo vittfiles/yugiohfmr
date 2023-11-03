@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CardCharacterShow, CardYugioh, Character, CharacterShow, Deck, MyCard } from '../models/card.interface';
+import { CardYugioh, Deck, MyCard } from '../models/card.interface';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,6 @@ export class CardapiService {
   DECKS_IN_STORAGE = 'decks_in_storage';
   MY_CARDS_IN_STORAGE = 'my_cards_in_storage';
   ITEMS_URL = 'assets/cards2.json';
-  CHARACTERS_URL = 'assets/characters.json';
 
   private readonly items$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
   private readonly _cards$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
@@ -22,10 +21,6 @@ export class CardapiService {
   private _currentDeck$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
   private _currentDeckBase$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
   
-  private _characters$: BehaviorSubject<Character[]> = new BehaviorSubject<Character[]>([]);
-  private _currentCharacterBase$: BehaviorSubject<CardCharacterShow[]> = new BehaviorSubject<CardCharacterShow[]>([]);
-  private _currentCharacter$: BehaviorSubject<CardCharacterShow[]> = new BehaviorSubject<CardCharacterShow[]>([]);
-
   constructor(private httpClient: HttpClient) {
   }
 
@@ -64,8 +59,6 @@ export class CardapiService {
       this._myCards$.next(receivedItems);
     });
 
-    this.httpClient.get<Character[]>(this.CHARACTERS_URL).subscribe(receivedCharacters=> this._characters$.next(receivedCharacters));
-    
     let deckInStorage = localStorage.getItem(this.DECKS_IN_STORAGE);
     if(deckInStorage)
       this._decks.next(JSON.parse(deckInStorage));
@@ -138,29 +131,6 @@ export class CardapiService {
     this._currentDeck$.next(newCardsForCurrentDeck);
     this._currentDeckBase$.next(newCardsForCurrentDeck);
     localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(newDecks));
-  }
-  getCharacters(): Observable<Character[]> {
-    return this._characters$.asObservable();
-  }
-  getCurrentCharacter(position: number): Observable<CardCharacterShow[]>{
-    let cardsValues = this.items$.getValue();
-    let values = this._characters$.getValue()[position];
-    /* let name = values[position].name;
-    let src = values[position].src; */
-
-    let data: CardCharacterShow[] = [];
-    values.deck.forEach(c=>{
-      data.push({
-        id: c.id,
-        name: c.name,
-        chance100: c.chance100,
-        chance2048: c.chance2048,
-        card: cardsValues.find(e => e.id === c.id) || cardsValues[0]
-      });
-    });
-    this._currentCharacter$.next(data);
-    this._currentCharacterBase$.next(data);
-    return this._currentCharacter$.asObservable();
   }
 
   getItemsDraw(): Observable<CardYugioh[]> {
@@ -308,64 +278,6 @@ export class CardapiService {
     }else{
       this._cards$.next(res);
     }
-    /* console.log("termino filtro",res) */
-  }
-  filterCharacterCards(obj: any): void{
-    /* console.log("inicio filtro") */
-    let res = [...this._currentCharacterBase$.getValue()];
-
-    if(obj.filters){
-      res = res.filter(card => {
-        if(obj.filters.monsters && card.card.monster)return true;
-        if(obj.filters.magics && card.card.magic)return true;
-        if(obj.filters.traps && card.card.trap)return true;
-        if(obj.filters.rituals && card.card.ritual)return true;
-        return false;
-      });
-    }
-    if(obj.search){
-      res = res.filter(card => {
-        return card.card.Name?.toLowerCase().includes(obj.search.toLowerCase());
-      })
-    }
-    if(obj.order){
-      if(obj.order === 'id')
-        res.sort((a, b) => ((a.id as number) > (b.id as number)) ? obj.ascending*1 : obj.ascending*(-1))
-      else if(obj.order === 'name')
-        res.sort((a, b) => ((a.card.Name as string) > (b.card.Name as string)) ? obj.ascending*1 : obj.ascending*(-1))
-      else if(obj.order === 'atk')
-        res.sort((a, b) => {
-          if(a.card.monster && b.card.monster){
-            if((a.card.ATK as number) > (b.card.ATK as number)){
-              return obj.ascending*1;
-            }else{
-              return obj.ascending*(-1);
-            }
-          }else if(!a.card.monster){
-            return 1;
-          }else{
-            return -1;
-          }
-        })
-      else if(obj.order === 'def')
-        res.sort((a, b) => {
-          if(a.card.monster && b.card.monster){
-            if((a.card.DEF as number) > (b.card.DEF as number)){
-              return obj.ascending*1;
-            }else{
-              return obj.ascending*(-1);
-            }
-          }else if(!a.card.monster){
-            return 1;
-          }else{
-            return -1;
-          }
-        })
-      else if(obj.order === '100')
-        res.sort((a, b) => (a.chance100 > b.chance100) ? obj.ascending*1 : obj.ascending*(-1))
-    }
-    
-    this._currentCharacter$.next(res);
     /* console.log("termino filtro",res) */
   }
 
