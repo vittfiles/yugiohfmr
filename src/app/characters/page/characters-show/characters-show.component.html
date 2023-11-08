@@ -4,7 +4,7 @@
 
 <div class="section-tab">
     <div class="limit-h scrollCards"><!--   [listData]="listMyCards[i]" (click)="cardClickMyCards(i)" [style.order]="listMyCards[i].position"  -->
-        <app-card-show *ngFor="let card of cardCharacter$ | async; index as i; trackBy: trackByItems" [card]="card.card" [chanceShow]="true" [chance100]="card.chance100" [ngClass]="{
+        <app-card-show *ngFor="let card of cardCharacter$ | async; index as i; trackBy: trackByItems" [card]="card.card" (click)="cardClick(card.card)" [chanceShow]="true" [chance100]="card.chance100" [ngClass]="{
           'card-deck-size': true
         }"></app-card-show>
     </div>

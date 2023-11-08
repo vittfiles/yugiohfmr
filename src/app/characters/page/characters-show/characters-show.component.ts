@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CardCharacterShow, CardYugioh } from 'src/app/core/models/card.interface';
 import { CharactersService } from 'src/app/core/services/characters.service';
+import { DialogCardComponent } from 'src/app/shared/dialog-card/dialog-card.component';
 
 @Component({
   selector: 'app-characters-show',
@@ -33,6 +34,12 @@ export class CharactersShowComponent {
     });
     this.cardCharacter$ = charactersService.getCurrentCharacter(this.deckId);
     this.updateFilter();
+  }
+  cardClick(c: CardYugioh){
+    const dialogRef = this.dialog.open(DialogCardComponent, {
+      data: c,
+    });
+    console.log(c.id);
   }
   orderUpdate(event: any,type: string){
     if(event.selected){
