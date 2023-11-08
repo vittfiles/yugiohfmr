@@ -113,8 +113,7 @@ export class CardapiService {
 
   filterCards(obj: any): void{
     /* console.log("inicio filtro") */
-    let res = [];
-    res = [...this.items$.getValue()];
+    let res = [...this.items$.getValue()];
 
     res = filterYugiohCards(obj,res);
     
