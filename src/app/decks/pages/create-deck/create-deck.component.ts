@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { CardapiService } from 'src/app/core/services/cardapi.service';
 import { Router } from '@angular/router';
+import { DeckService } from 'src/app/core/services/deck.service';
 
 @Component({
   selector: 'app-create-deck',
@@ -16,13 +17,13 @@ export class CreateDeckComponent {
     description: new FormControl('',[Validators.required, Validators.minLength(3), Validators.maxLength(50)])
   });
 
-  constructor(public cardapiService: CardapiService, private router: Router){}
+  constructor(public deckService: DeckService, private router: Router){}
 
   submit(){
     if(this.formCreateDeck.valid){
       console.log(this.formCreateDeck.controls.name.value);
       console.log(this.formCreateDeck.controls.description.value);
-      this.cardapiService.createDeck(this.formCreateDeck.controls.name.value as string,this.formCreateDeck.controls.description.value as string);
+      this.deckService.createDeck(this.formCreateDeck.controls.name.value as string,this.formCreateDeck.controls.description.value as string);
       this.router.navigate(['/decks'])
     }
   }

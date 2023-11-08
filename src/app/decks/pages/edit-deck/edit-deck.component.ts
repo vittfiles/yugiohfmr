@@ -8,6 +8,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs/operators';
 import { CardFilter, CardYugioh, Deck, MyCard } from 'src/app/core/models/card.interface';
 import { CardapiService } from 'src/app/core/services/cardapi.service';
+import { DeckService } from 'src/app/core/services/deck.service';
 import { DialogCardComponent } from 'src/app/shared/dialog-card/dialog-card.component';
 
 @Component({
@@ -20,12 +21,14 @@ export class EditDeckComponent implements OnDestroy {
   deckId: number = 0;
   getDecks$: Observable<Deck[]>;
   deck?: Deck;
+
   //my cards data
-  cardsDraw$: Observable<CardYugioh[]>;
- 
   myCards$: Observable<CardYugioh[]>;
   myCardList$: Observable<MyCard[]>;
   listMyCards: CardFilter[] = [];
+  limitMyCard: number = 30;
+  totalMyCard: number = 730;
+  firstUpdateMyCard: boolean = true;
 
   orderObjectMyCards: string = 'id';
   searchMyCards: string = "";
@@ -52,9 +55,12 @@ export class EditDeckComponent implements OnDestroy {
   ascendingCurrentDeck = new FormControl(true);
   removeCard: boolean = false;
   
-  constructor(public route: ActivatedRoute, public cardApiService: CardapiService, public dialog: MatDialog){
-    this.cardsDraw$ = this.cardApiService.getItemsDraw();
-    this.currentDeck$ = this.cardApiService.getCurrentDeck();
+  constructor(
+    public route: ActivatedRoute, 
+    public cardApiService: CardapiService,
+    public deckService: DeckService, 
+    public dialog: MatDialog){
+    this.currentDeck$ = this.deckService.getCurrentDeck();
     this.myCards$ = this.cardApiService.getMyCards().pipe(takeUntil(this.notifier));
     this.myCardList$ = this.cardApiService.getMyCardsList().pipe(takeUntil(this.notifier));
 
@@ -62,11 +68,11 @@ export class EditDeckComponent implements OnDestroy {
       if(!Number.isNaN(params['id']))
       this.deckId = Number.parseInt(params['id']);
     });
-    this.getDecks$ = cardApiService.getDecks().pipe(takeUntil(this.notifier));
+    this.getDecks$ = deckService.getDecks().pipe(takeUntil(this.notifier));
     this.getDecks$.forEach(decks=>this.deck = decks[this.deckId]);
   }
   ngOnInit(): void {
-    this.cardApiService.setCurrentDeck(this.deckId);
+    this.deckService.setCurrentDeck(this.deckId);
     this.updateFilterCurrentDeck();
     for( let i = 0; i< 722; i++){
       this.listMyCards.push({
@@ -74,7 +80,7 @@ export class EditDeckComponent implements OnDestroy {
         position: i+1,
         hide: true,
         count: 0,
-        use: this.cardApiService.getTotalOfCurrentDeck(i+1),
+        use: this.deckService.getTotalOfCurrentDeck(i+1),
         showUse: true
       });
     }
@@ -83,62 +89,50 @@ export class EditDeckComponent implements OnDestroy {
   updateMyCardList(){
     this.myCardList$.forEach(cards=>{
       cards.forEach(card=>{
-        this.listMyCards[card.id-1].hide = false;
         this.listMyCards[card.id-1].count = card.count;
-        this.listMyCards[card.id-1].use = this.cardApiService.getTotalOfCurrentDeck(card.id);
+        this.listMyCards[card.id-1].use = this.deckService.getTotalOfCurrentDeck(card.id);
         /* this.list[card.id-1].count = card.count; */
       })
-      console.log(cards);
     })
   }
   addCardToggle(event:any){ this.addCard = event.selected; }
   removeCardToggle(event:any){ this.removeCard = event.selected; }
-  cardClickMyCards(id: number){
+  cardClickMyCards(c: CardYugioh){
     if(this.addCard){
-      console.log("agregar "+id);
-      this.cardApiService.addCardToDeck(this.deckId,id+1);
+      console.log("agregar "+c.id);
+      this.deckService.addCardToDeck(this.deckId,c.idInt);
 
       this.listMyCards.forEach(c=>{
-        c.hide = true;
         c.count = 0;
       });
       /* this.list.forEach(c=>c.count = 0); */
       this.updateMyCardList();
       this.updateFilterCurrentDeck();
-      this.updateFilterMyCards();
+      /* this.updateFilterMyCards(); */
     }else{
-      let data;
-      this.cardsDraw$.forEach(cards=>{
-        data = cards[id];
-      })
+      
       const dialogRef = this.dialog.open(DialogCardComponent, {
-        data: data,
+        data: c,
       });
-      console.log(id);
     }
   }
-  cardClickCurrentDeck(id: number|null|string){
+  cardClickCurrentDeck(c: CardYugioh){
     if(this.removeCard){
-      console.log("quitar "+id);
-      this.cardApiService.removeCardToDeck(this.deckId,id as number);
+      console.log("quitar "+c.id);
+      this.deckService.removeCardToDeck(this.deckId,c.idInt);
 
       this.listMyCards.forEach(c=>{
-        c.hide = true;
         c.count = 0;
       });
       //this.list.forEach(c=>c.count = 0);
       this.updateMyCardList();
       this.updateFilterCurrentDeck();
-      this.updateFilterMyCards();
+      /* this.updateFilterMyCards(); */
     }else{
-      let data;
-      this.cardsDraw$.forEach(cards=>{
-        data = cards[(id as number)-1];
-      })
       const dialogRef = this.dialog.open(DialogCardComponent, {
-        data: data,
+        data: c,
       });
-      console.log(id);
+      console.log(c.id);
     }
   }
   orderUpdateMyCards(event: any,type: string){
@@ -159,9 +153,9 @@ export class EditDeckComponent implements OnDestroy {
   }
   updateFilterCurrentDeck(){
     if(!this.filterInputCurrentDeck.controls.monsters.value && !this.filterInputCurrentDeck.controls.magics.value && !this.filterInputCurrentDeck.controls.traps.value && !this.filterInputCurrentDeck.controls.rituals.value){
-      this.cardApiService.filterCards({order: this.orderObjectCurrentDeck,currentDeck:true, ascending: this.ascendingCurrentDeck.value ? 1 : -1, search: this.searchCurrentDeck});
+      this.deckService.filterCards({order: this.orderObjectCurrentDeck,currentDeck:true, ascending: this.ascendingCurrentDeck.value ? 1 : -1, search: this.searchCurrentDeck});
     }else{
-      this.cardApiService.filterCards({
+      this.deckService.filterCards({
         filters: {
           monsters: this.filterInputCurrentDeck.controls.monsters.value,
           magics: this.filterInputCurrentDeck.controls.magics.value,
@@ -184,6 +178,7 @@ export class EditDeckComponent implements OnDestroy {
     }) */
   }
   updateFilterMyCards(){
+    this.limitMyCard = 30;
     if(!this.filterInputMyCards.controls.monsters.value && !this.filterInputMyCards.controls.magics.value && !this.filterInputMyCards.controls.traps.value && !this.filterInputMyCards.controls.rituals.value){
       this.cardApiService.filterCards({order: this.orderObjectMyCards,myCards:true, ascending: this.ascendingMyCards.value ? 1 : -1, search: this.searchMyCards});
     }else{
@@ -200,14 +195,6 @@ export class EditDeckComponent implements OnDestroy {
         search: this.searchMyCards
       });
     }
-    this.listMyCards.forEach(e=>e.hide=true)
-    this.myCards$.forEach(cards=>{
-      cards.forEach((card, i)=>{
-        let id = card.id as number;
-        this.listMyCards[id-1].hide = false;
-        this.listMyCards[id-1].position = i+1;
-      })
-    })
   }
   //scroll controller
   scrollPosition: number = 0;
@@ -224,7 +211,25 @@ export class EditDeckComponent implements OnDestroy {
     document.querySelector('.scrollCards')?.scrollTo(0,this.scrollPosition);
     document.querySelector('.scrollCardsSecond')?.scrollTo(0,this.scrollPositionSecond);
   }
-  
+  //code to render cards
+  trackByItems(index: number,item: CardYugioh){
+    return item.id;
+  }
+  ngAfterViewChecked() {
+    // viewChild is updated after the view has been checked
+    //console.log('AfterViewChecked (no change)');
+    if(this.limitMyCard < this.totalMyCard){
+      setTimeout(()=>{
+        if(this.limitMyCard < this.totalMyCard)
+          this.limitMyCard += 150;
+        if(this.firstUpdateMyCard){
+          this.firstUpdateMyCard=false;
+          this.updateFilterMyCards();
+        }
+        /* console.log(this.limitMyCard); */
+      },50);
+    }
+  }
   ngOnDestroy(): void {
     this.notifier.next(true);
     this.notifier.complete();

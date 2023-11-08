@@ -2,10 +2,11 @@
     <mat-tab label="My cards">
         <div class="section-tab">
             <div class="limit-h scrollCards" (scroll)="getScroll($event)">
-                <app-card-show *ngFor="let card of cardsDraw$ | async; index as i" [card]="card" [listData]="listMyCards[i]" (click)="cardClickMyCards(i)" [style.order]="listMyCards[i].position" [ngClass]="{
-                  'card-deck-size': true,
-                  'hide': listMyCards[i].hide
-                }"></app-card-show>
+              <ng-container *ngFor="let card of myCards$ | async; index as i; trackBy: trackByItems">
+                <app-card-show *ngIf="i<limitMyCard" [card]="card" [listData]="listMyCards[card.idInt - 1]" (click)="cardClickMyCards(card)" [style.order]="listMyCards[i].position" [ngClass]="{
+                    'card-deck-size': true
+                  }"></app-card-show>
+              </ng-container>  
             </div>
             <div class="options-card">
               <section class="filter-card">
@@ -40,9 +41,8 @@
     <mat-tab [label]="deck?.name+' ('+(currentDeck$ | async)?.length+')'">
       <div class="section-tab">
         <div class="limit-h scrollCardsSecond" (scroll)="getScrollSecond($event)">
-          <app-card-show *ngFor="let card of currentDeck$ | async; index as i" [card]="card" (click)="cardClickCurrentDeck(card.id)" [ngClass]="{
-            'card-deck-size': true,
-            'hide': false
+          <app-card-show *ngFor="let card of currentDeck$ | async; index as i" [card]="card" (click)="cardClickCurrentDeck(card)" [ngClass]="{
+            'card-deck-size': true
           }"></app-card-show>
         </div>
         <div class="options-card">

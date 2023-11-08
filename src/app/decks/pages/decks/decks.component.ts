@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CardYugioh, Deck } from 'src/app/core/models/card.interface';
-import { CardapiService } from 'src/app/core/services/cardapi.service';
+import { Deck } from 'src/app/core/models/card.interface';
+import { DeckService } from 'src/app/core/services/deck.service';
 
 @Component({
   selector: 'app-decks',
@@ -11,12 +11,12 @@ import { CardapiService } from 'src/app/core/services/cardapi.service';
 export class DecksComponent {
   decks$: Observable<Deck[]>;
 
-  constructor(private cardApiService: CardapiService){
-    this.decks$ = this.cardApiService.getDecks();
+  constructor(private deckService: DeckService){
+    this.decks$ = this.deckService.getDecks();
   }
 
   deleteDeck(i:number){
-    this.cardApiService.deleteDeck(i);
+    this.deckService.deleteDeck(i);
   }
 
   delLocalStorage(){

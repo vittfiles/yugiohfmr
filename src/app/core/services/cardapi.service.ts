@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CardYugioh, Deck, MyCard } from '../models/card.interface';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { typeMonster, typeMagic, typeRitual, typeTrap } from '../utils/handle-type';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,9 @@ export class CardapiService {
   private readonly _myCards$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
   private readonly _myCardsList$: BehaviorSubject<MyCard[]> = new BehaviorSubject<MyCard[]>([]);
   
-  private _decks: BehaviorSubject<Deck[]> = new BehaviorSubject<Deck[]>([]);
+ /*  private _decks: BehaviorSubject<Deck[]> = new BehaviorSubject<Deck[]>([]);
   private _currentDeck$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
-  private _currentDeckBase$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]);
+  private _currentDeckBase$: BehaviorSubject<CardYugioh[]> = new BehaviorSubject<CardYugioh[]>([]); */
   
   constructor(private httpClient: HttpClient) {
   }
@@ -36,10 +37,10 @@ export class CardapiService {
           card.id = Number.parseInt(card.id as string);
           card.idInt = card.id;
           card.src = "assets/imgCard/"+ card.id + "-data.png";
-          card.monster = this.typeMonster(card);
-          card.magic = this.typeMagic(card);
-          card.trap = this.typeTrap(card);
-          card.ritual = this.typeRitual(card);
+          card.monster = typeMonster(card);
+          card.magic = typeMagic(card);
+          card.trap = typeTrap(card);
+          card.ritual = typeRitual(card);
           if(card.ATK){
             card.ATK = Number.parseInt(card.ATK as string);
           }else{
@@ -59,15 +60,15 @@ export class CardapiService {
       this._myCards$.next(receivedItems);
     });
 
-    let deckInStorage = localStorage.getItem(this.DECKS_IN_STORAGE);
+    /* let deckInStorage = localStorage.getItem(this.DECKS_IN_STORAGE);
     if(deckInStorage)
-      this._decks.next(JSON.parse(deckInStorage));
+      this._decks.next(JSON.parse(deckInStorage)); */
     
     let myCardsInStorage = localStorage.getItem(this.MY_CARDS_IN_STORAGE);
     if(myCardsInStorage)
       this._myCardsList$.next(JSON.parse(myCardsInStorage));
   }
-  addCardToDeck(deckId: number,cardId: number){
+/*    addCardToDeck(deckId: number,cardId: number){
     let newDecks = this._decks.getValue();
     let limit = 0;
     let limitElement = this._myCardsList$.getValue().find(c => c.id === cardId);
@@ -90,13 +91,12 @@ export class CardapiService {
       this._decks.next(newDecks);
       this._currentDeck$.next(newCardsForCurrentDeck);
       this._currentDeckBase$.next(newCardsForCurrentDeck);
-      /* console.log("new deck : ",newDecks,newCardsForCurrentDeck); */
       localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(newDecks));
     }else{
       console.log("Limite alcanzado");
     }
-  }
-  removeCardToDeck(deckId: number,cardId: number){
+  } */
+/*   removeCardToDeck(deckId: number,cardId: number){
     let newDecks = this._decks.getValue();
     let noRemove = true;
     
@@ -131,7 +131,7 @@ export class CardapiService {
     this._currentDeck$.next(newCardsForCurrentDeck);
     this._currentDeckBase$.next(newCardsForCurrentDeck);
     localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(newDecks));
-  }
+  }  */
 
   getItemsDraw(): Observable<CardYugioh[]> {
     return this.items$.asObservable();
@@ -146,7 +146,7 @@ export class CardapiService {
   getMyCardsList(): Observable<MyCard[]> {
     return this._myCardsList$.asObservable();
   }
-  getCurrentDeck(): Observable<CardYugioh[]>{
+/*   getCurrentDeck(): Observable<CardYugioh[]>{
     return this._currentDeck$.asObservable();
   }
   getTotalOfCurrentDeck(cardId: number):number{
@@ -165,7 +165,7 @@ export class CardapiService {
     });
     this._currentDeck$.next(newCardsForCurrentDeck);
     this._currentDeckBase$.next(newCardsForCurrentDeck);
-  }
+  } */
 
   addCardMyCardList(id:number){
     let cardExist = this._myCardsList$.getValue().find(card=> card.id === id);
@@ -206,11 +206,12 @@ export class CardapiService {
   filterCards(obj: any): void{
     /* console.log("inicio filtro") */
     let res = [];
-    if(obj.currentDeck){
+    /* if(obj.currentDeck){
       res = [...this._currentDeckBase$.getValue()];
     }else{
       res = [...this.items$.getValue()];
-    }
+    } */
+    res = [...this.items$.getValue()];
 
     if(obj.filters){
       res = res.filter(card => {
@@ -274,14 +275,14 @@ export class CardapiService {
       });
       this._myCards$.next(res);
     }else if(obj.currentDeck){
-      this._currentDeck$.next(res);
+      //this._currentDeck$.next(res);
     }else{
       this._cards$.next(res);
     }
     /* console.log("termino filtro",res) */
   }
 
-  getDecks(): Observable<Deck[]>{
+/*   getDecks(): Observable<Deck[]>{
     return this._decks.asObservable();
   }
   
@@ -292,7 +293,7 @@ export class CardapiService {
       cards: [],
       description: description
     }]);
-  }
+  } */
 /*   deleteMazo(position: number){
     if(position < this._decks.length){
       this._decks.
@@ -306,11 +307,11 @@ export class CardapiService {
       src: card.src as string
     });
   } */
-  deleteDeck(id: number){
+/*   deleteDeck(id: number){
     let res = this._decks.getValue().filter((d,i)=> i !== id);
     this._decks.next(res);
     localStorage.setItem(this.DECKS_IN_STORAGE,JSON.stringify(res));
-  }
+  } */
   removeAllCards(){
     this._myCards$.next([]);
     this._myCardsList$.next([]);
@@ -326,18 +327,5 @@ export class CardapiService {
     })
     this._myCardsList$.next(allCards);
     localStorage.setItem(this.MY_CARDS_IN_STORAGE,JSON.stringify(this._myCardsList$.getValue()));
-  }
-  
-  typeMonster(card: CardYugioh):boolean{
-    return card.Type !== 'Magic' && card.Type !== 'Field' && card.Type !== 'Equip' && card.Type !== 'Trap' && card.Type !== 'Ritual';
-  }
-  typeMagic(card: CardYugioh):boolean{
-    return card.Type === 'Magic' || card.Type === 'Field' || card.Type === 'Equip';
-  }
-  typeTrap(card: CardYugioh):boolean{
-    return card.Type === 'Trap';
-  }
-  typeRitual(card: CardYugioh):boolean{
-    return card.Type === 'Ritual';
   }
 }
